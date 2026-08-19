@@ -72,9 +72,8 @@ export default function Contact() {
               variants={cascadeItem}
               className="mt-6 max-w-xl text-base leading-relaxed text-gray-400 sm:text-lg"
             >
-              Open to full-time roles in automation, BI, or ops — and available
-              for freelance and contract work. The fastest way to reach me is
-              WhatsApp.
+              Available for freelance work and projects on contract. The
+              fastest way to reach me is WhatsApp.
             </motion.p>
 
             <motion.div
