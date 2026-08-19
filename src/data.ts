@@ -122,8 +122,18 @@ export const MODULES: Module[] = [
 ];
 
 export const CREDENTIALS = [
-  { name: "Generative AI Mastermind", issuer: "Outskill", year: "2025" },
-  { name: "AI Tools Workshop", issuer: "Be10x", year: "2025" },
+  {
+    name: "Generative AI Mastermind",
+    issuer: "Outskill",
+    year: "2026",
+    image: "/assets/cert-genai-mastermind.jpg",
+  },
+  {
+    name: "AI Tools Workshop",
+    issuer: "Be10x",
+    year: "2026",
+    image: "/assets/cert-aiworkshop.jpg",
+  },
 ];
 
 export const METRICS = [

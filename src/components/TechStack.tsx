@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { cascade, cascadeItem } from "../lib/motion";
 import { CREDENTIALS, MODULES } from "../data";
 import SectionHeading from "./SectionHeading";
@@ -24,6 +25,18 @@ function CertIcon() {
 }
 
 export default function TechStack() {
+  const [activeCert, setActiveCert] = useState<number | null>(null);
+  const cert = activeCert !== null ? CREDENTIALS[activeCert] : null;
+
+  useEffect(() => {
+    if (activeCert === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setActiveCert(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [activeCert]);
+
   return (
     <section
       id="stack"
@@ -105,16 +118,72 @@ export default function TechStack() {
           <span className="font-mono text-[11px] tracking-[0.18em] text-gray-600">
             // CREDENTIALS
           </span>
-          {CREDENTIALS.map((c) => (
-            <span key={c.name} className="flex items-center gap-2.5">
+          {CREDENTIALS.map((c, i) => (
+            <button
+              key={c.name}
+              type="button"
+              onClick={() => setActiveCert(i)}
+              aria-label={`View ${c.name} certificate`}
+              className="flex items-center gap-2.5 transition-opacity duration-200 hover:opacity-75 focus-visible:opacity-75 focus-visible:outline-none"
+            >
               <CertIcon />
               <span className="text-sm text-gray-300">{c.name}</span>
               <span className="font-mono text-[11px] text-gray-600">
                 {c.issuer} · {c.year}
               </span>
-            </span>
+            </button>
           ))}
         </motion.div>
+
+        <AnimatePresence>
+          {cert && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
+              role="dialog"
+              aria-modal="true"
+              aria-label={`${cert.name} certificate`}
+            >
+              <div
+                className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+                onClick={() => setActiveCert(null)}
+              />
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                className="relative w-full max-w-3xl"
+              >
+                <img
+                  src={cert.image}
+                  alt={`${cert.name} certificate — ${cert.issuer}`}
+                  className="max-h-[85vh] w-full rounded-lg border border-white/10 object-contain shadow-2xl"
+                />
+                <button
+                  type="button"
+                  onClick={() => setActiveCert(null)}
+                  aria-label="Close certificate"
+                  className="absolute -right-2.5 -top-2.5 flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-ink text-gray-300 shadow-lg transition-colors duration-200 hover:text-white"
+                >
+                  <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    aria-hidden
+                  >
+                    <path d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
     </section>
   );
